@@ -39,8 +39,7 @@ Plain text is prepared in paragraphs, as in the first part of this document. *Te
 
 3. Write a brief paragraph describing previous coursework in statistics (if any) and share your motivation for learning statistics with R. *Knit* the document. Note that each time you *knit* the document, the output overwrites the previous version.
 
-Your paragraph...
-
+Before this class, I have had no previous coursework in statistics. My motivation for enrolling in this course is to learn about what exactly statistics are and how they can be beneficial throughout my life and career. I'm very interested in using R because I have a background in coding with Java and this definitely reminds me a lot of that so I am enjoying it so far. This class is also a part of my major (HNFE) so I hope that t will be beneficial in that regard as well.
 
 Bulleted lists are produced using the formatting syntax: 
 
@@ -53,7 +52,11 @@ The list must be preceded by a blank line, and 4 spaces should be used before su
 
 4. Write a bulleted list giving your year of graduation, your field of study, and the country you are from.  Under the entry for your country, prepare subitems with the name of your state and city. *Knit* the document and inspect it to make sure the PDF is correctly produced.
 
-Your bulleted list...
+- 2027
+- Exercise and Health Sciences
+- United States of America
+    + North Carolina
+    + Raleigh
 
 Additional formatting commands will be introduced gradually throughout the rest of the labs.
 
