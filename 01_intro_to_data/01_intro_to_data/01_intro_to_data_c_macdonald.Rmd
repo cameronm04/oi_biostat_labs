@@ -72,8 +72,7 @@ To adjust the size of a plot in the knitted PDF, change fig.height and fig.width
 plot(cdc$weight ~ cdc$height)
 ```
 
-Do \texttt{height} and \texttt{weight} appear to be associated?
-
+Do \texttt{height} and \texttt{weight} appear to be associated? Yes, they do.
 
 
 
@@ -95,7 +94,7 @@ The symbol for multiplication in R is the asterisk, *
 ```
 
 
-5. BMI is calculated as weight in kilograms divided by height squared. Create a new variable \texttt{bmi} and make a scatterplot of \texttt{height} and \texttt{BMI}. Do \texttt{height} and \texttt{BMI} seem to be associated?
+5. BMI is calculated as weight in kilograms divided by height squared. Create a new variable \texttt{bmi} and make a scatterplot of \texttt{height} and \texttt{BMI}. Do \texttt{height} and \texttt{BMI} seem to be associated? Yes, they do
 
 <!---
 The symbol for division in R is the forwards slash, /
@@ -117,6 +116,7 @@ The symbol for exponentiation in R is the carat, ^
 	
 A BMI of 30 or above is considered obese. Why might health agencies choose to use BMI as a measure of obesity, rather than weight?
 
+They chose BMI because it's a more efficient way to avaluate someone's obesity level. I person who's 5'3 and 200 lbs is obviosly going to have a higher body fat percentage than someone who is 6'3 and 200 lbs. Taking one's height into account is able to produce a more accurate evaluation of someone's weight.
 
 
 
@@ -172,14 +172,14 @@ data(coding.mrna)
 ```
 
 
-1. How many transcripts are represented in this dataset? Use the \texttt{nrow()} command to return the number of rows in the dataset.
+1. How many transcripts are represented in this dataset? Use the \texttt{nrow()} command to return the number of rows in the dataset. 
 
 ```{r}
 nrow(coding.mrna)
 ```
 
 
-
+79105 rows
 
 
 
