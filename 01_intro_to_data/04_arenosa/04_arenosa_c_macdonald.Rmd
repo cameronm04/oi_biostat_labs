@@ -35,14 +35,16 @@ For additional hints on how to take a random sample, refer to Lab 1, Intro to Da
 --->
 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 #load the data
+library(oibiostat)
+data(arenosa)
 
 #create arenosa.sample
 arenosa.rows = 1:nrow(arenosa)
 set.seed(5011)
-arenosa.sample.rows = sample( )
-arenosa.sample = 
+arenosa.sample.rows = sample(arenosa.rows, size = 100, replace = FALSE)
+arenosa.sample = arenosa[arenosa.sample.rows, ]
 ```
 
 
@@ -51,21 +53,21 @@ arenosa.sample =
 
 2. Print out the first five rows and first seven columns of \texttt{arenosa.sample}; briefly describe the data matrix shown. Does expression of these genes seem higher in vernalized or non-vernalized plants?
 
-```{r}
-
+```{r, eval = TRUE}
+arenosa.sample[1:5, 1:7]
 ```
 
-
+The data matrix shown shows gene expression data for the first five genes in the arenosa.sample in the KA specimens. Expression of these genes seems higher in vernalized plants than in non-vernalized plants.
 
 
 
 3. The three measured individuals in a particular group represent biological replicates: individuals of the same type grown under identical conditions. Collecting data from multiple replicates captures the inherent biological variability between organisms. Averaging expression levels across replicates provides an estimate of the typical expression level in the larger population. Using the \texttt{apply()} function as shown in the template, calculate mean expression level across the three replicates for each type of sample: non-vernalized KA, vernalized KA, non-vernalized TBG, and vernalized TBG.\footnote{Recall that the \texttt{apply()} function was introduced in Lab 3 of this chapter; refer to the Lab Notes for an explanation of the function syntax.}
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 ka.nv.mean.sample = apply(arenosa.sample[2:4], 1, mean)
-ka.v.mean.sample =
-tbg.nv.mean.sample =
-tbg.v.mean.sample =
+ka.v.mean.sample = apply(arenosa.sample[5:7], 1, mean)
+tbg.nv.mean.sample = apply(arenosa.sample[8:10], 1, mean)
+tbg.v.mean.sample = apply(arenosa.sample[11:13], 1, mean)
 ```
 
 
@@ -73,37 +75,37 @@ tbg.v.mean.sample =
 4. Using graphical methods, compare expression levels of cold-responsive genes between non-vernalized and vernalized KA, and between non-vernalized and vernalized TBG. How does gene expression differ between non-vernalized and vernalized plants?
     
     
-```{r}
+```{r, eval = TRUE}
 #graphical summaries
-
+par(mfrow = c(1, 2))
+boxplot(ka.nv.mean.sample, ka.v.mean.sample, names = c("KA NV", "KA V"))
+boxplot(tbg.nv.mean.sample, tbg.v.mean.sample, names = c("TBG NV", "TBG V"))
 ```
 
-    
-
-
+Gene expression is higher in vernalized plants is higher than in non-vernalized plants in both TBG and KA plants.
 
 
 5. Using graphical and numerical methods, compare expression levels of cold-responsive genes between non-vernalized KA and non-vernalized TBG, and between vernalized KA and vernalized TBG. How does gene expression differ between non-vernalized KA and TBG plants? How does gene expression differ between vernalized KA and TBG plants?
     
 
-```{r}
+```{r, eval = TRUE}
 #numerical summaries
-
+summary(ka.nv.mean.sample)
+summary(tbg.nv.mean.sample)
+summary(ka.v.mean.sample)
+summary(tbg.v.mean.sample)
 
 #graphical summaries
-
+par(mfrow = c(1, 2))
+boxplot(ka.nv.mean.sample, tbg.nv.mean.sample, names = c("KA NV", "TBG NV"))
+boxplot(ka.v.mean.sample, tbg.v.mean.sample, names = c("KA V", "TBG V"))
 ```
-
-
-
+Cold-responsive gene expression in non-verbalized TBG is a bit higher than in that of KA and vernalized TBG has less expression than vernalized KA. Gene expression in vernalized KA is at 404 which is higher than the 344 that's in vernalized TBG.
 
 
 6. Based on the observations made in Questions 4 and 5, does vernalization appear to trigger a stronger change in gene expression in KA plants or TBG plants?
 
-
-
-
-
+Based on my observations, the stronger change is in KA plants.
 
 
 ### Identifying outliers for responsiveness
@@ -113,20 +115,27 @@ tbg.v.mean.sample =
     Using the expression means defined in Question 3, calculate the responsiveness of the genes in \texttt{arenosa.sample} for TBG and for KA. Examine the responsiveness for the first three genes in the sample. Interpret the meaning of responsiveness values of 1, less than 1, and greater than 1. 
     
     
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 #calculate responsiveness
-ka.resp.sample = 
-tbg.resp.sample = 
+ka.resp.sample = ka.v.mean.sample/ka.nv.mean.sample
+tbg.resp.sample = tbg.v.mean.sample/tbg.nv.mean.sample
 
 #view responsiveness for genes 1-3
-
+ka.resp.sample[1:3]
+tbg.resp.sample[1:3]
 ```
+A responsiveness value of 1 occurs when the vernalized expression level is the same as the non-vernalized expression level. A value less than 1 indicates higher non-vernalized expression and a value greater than 1 indicates higher a vernalized expression level.
+    
 
 8. Create a plot to compare the responsiveness of genes in KA versus TBG for the genes in \texttt{arenosa.sample}; a transformation may be helpful. Describe what you see.
 
-```{r}
-
+```{r, eval = TRUE}
+par(mfrow = c(1, 2))
+boxplot(tbg.resp.sample, ka.resp.sample, names = c("TBG resp", "KA resp"))
+boxplot(log(tbg.resp.sample), log(ka.resp.sample), 
+        names = c("log(TBG resp)", "log(KA resp)"))
 ```
+I see that more genes in KA are differentially expressed between vernalized and non-vernalized samples and responsiveness is higher in KA than TBG.
 
 9. Among the 1,088 genes in the complete dataset, which seem to have unusually high or low response to cold treatment; in other words, which genes have a response that is an outlier? Conduct separate analyses for TBG and KA plants, on log-transformed responsiveness.
 
@@ -142,32 +151,87 @@ Hints: Either the functions intersect() or merge( ) may be useful for identifyin
 --->
     
   
-```{r}
+```{r, eval = TRUE}
 #calculate log responsiveness for all genes
+ka.nv.mean = apply(arenosa[2:4], 1, mean)
+ka.v.mean = apply(arenosa[5:7], 1, mean)
+tbg.nv.mean = apply(arenosa[8:10], 1, mean)
+tbg.v.mean = apply(arenosa[11:13], 1, mean)
+
+log.ka.resp = log(ka.v.mean/ka.nv.mean)
+log.tbg.resp = log(tbg.v.mean/tbg.nv.mean)
+
 
 #define outlier boundaries for ka
+ka.quart.3 = quantile(log.ka.resp, 0.75, na.rm = TRUE)
+ka.quart.1 = quantile(log.ka.resp, 0.25, na.rm = TRUE)
+ka.iqr = ka.quart.3 - ka.quart.1
+ka.lb.outlier = ka.quart.1 - 1.5*ka.iqr
+ka.ub.outlier = ka.quart.3 + 1.5*ka.iqr
 
 #define outlier boundaries for tbg
+tbg.quart.3 = quantile(log.tbg.resp, 0.75, na.rm = TRUE)
+tbg.quart.1 = quantile(log.tbg.resp, 0.25, na.rm = TRUE)
+tbg.iqr = tbg.quart.3 - tbg.quart.1
+tbg.lb.outlier = tbg.quart.1 - 1.5*tbg.iqr
+tbg.ub.outlier = tbg.quart.3 + 1.5*tbg.iqr
 
 #identify large outliers
+arenosa.response = data.frame(arenosa$gene.name, log.tbg.resp, log.ka.resp)
+
+which.tbg.pos.out = log.tbg.resp > tbg.ub.outlier
+tbg.pos.out = as.matrix(arenosa.response[which.tbg.pos.out, ])
+order.pos.tbg.out = order(log.tbg.resp, decreasing = TRUE)
+ordered.pos.tbg.out = as.matrix(arenosa.response[order.pos.tbg.out, ])
+ordered.pos.tbg.out[1:10, ] #show the first 10 outliers
+
+which.ka.pos.out = log.ka.resp > ka.ub.outlier
+ka.pos.out = as.matrix(arenosa.response[which.ka.pos.out, ])
+order.pos.ka.out = order(log.ka.resp, decreasing = TRUE)
+ordered.pos.ka.out = as.matrix(arenosa.response[order.pos.ka.out, ])
+ordered.pos.ka.out[1:10, ] #show the first 10 outliers
 
 #identify common large outliers
 
+#using intersect()
+tbg.pos.out = arenosa[which.tbg.pos.out, 1]
+ka.pos.out = arenosa[which.ka.pos.out, 1]
+intersect(tbg.pos.out, ka.pos.out)
+
+#using (merge)
+merge(arenosa.response[which.tbg.pos.out, ], arenosa.response[which.ka.pos.out, ])
+
 #identify small outliers
+which.tbg.neg.out = log.tbg.resp < tbg.lb.outlier
+tbg.neg.out = as.matrix(arenosa.response[which.tbg.neg.out, ])
+order.neg.tbg.out = order(log.tbg.resp, decreasing = FALSE)
+ordered.neg.tbg.out = as.matrix(arenosa.response[order.neg.tbg.out, ])
+ordered.neg.tbg.out[1:10, ] #show the first 10 outliers
+
+which.ka.neg.out = log.ka.resp < ka.lb.outlier
+ka.neg.out = as.matrix(arenosa.response[which.ka.neg.out, ])
+order.neg.ka.out = order(log.ka.resp, decreasing = FALSE)
+ordered.neg.ka.out = as.matrix(arenosa.response[order.neg.ka.out, ])
+ordered.neg.ka.out[1:10, ] #show the first 10 outliers
 
 #identify common small outliers
 
-#using intersect
+#using intersect()
+tbg.neg.out = arenosa[which.tbg.neg.out, 1]
+ka.neg.out = arenosa[which.ka.neg.out, 1]
+intersect(tbg.neg.out, ka.neg.out)
 
-
+#using (merge)
+merge(arenosa.response[which.tbg.neg.out, ], arenosa.response[which.ka.neg.out, ])
 ```
   
-  
+There are 17 high outliers for both KA and TBG (476817, 485985, 493317, 887585, 918965, 919141, 949566, ADH, AtGolS3, ATGRP9, AtPDC1, BETA-VPE, CYP75B1, ELIP, LHY, RAP2.1, VIN3)and 3 low outliers for both KA and TBG (485694, 921327, HR3).  
   
   
   
   b) Why might it be interesting to further investigate cold-responsive genes that are either high outliers or low outliers for both KA and TBG?
-  
+
+The high cold-responsive genes could play a role in how plants detect colder temperatures.
 
 
 
