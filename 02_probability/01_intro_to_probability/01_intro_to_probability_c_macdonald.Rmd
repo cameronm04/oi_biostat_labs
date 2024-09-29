@@ -31,10 +31,10 @@ Before writing the code for a simulation to estimate probability, it is helpful 
 
 1. The following code illustrates the use of the \texttt{sample()} command to simulate the result for one set of 5 coin tosses. 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 #define parameters
-prob.heads = 
-number.tosses = 
+prob.heads = 0.6
+number.tosses = 5
 
 #simulate the coin tosses
 outcomes = sample(c(0, 1), size = number.tosses,
@@ -60,26 +60,19 @@ Set the parameters above, then change FALSE to TRUE for the output to display in
   
   b) To generate \texttt{outcomes}, the \texttt{sample()} command draws from the values \texttt{0} and \texttt{1} with probabilites corresponding to those specified by the argument \texttt{prob}. Which number corresponds to heads, and which corresponds to tails?
 
-
-
+\texttt{0} corresponds to tails and \texttt{1} corresponds to heads.
   
   c) Why is it important to sample with replacement?
 
-
-
-
+It's important because it will allow any coin to have the heads or tails outcome even if another coin was observed to be something different. It will create variety in results when the code is run.
   
   d) What is the advantage of representing the outcomes with the values \texttt{0} and \texttt{1}, rather than with letters like "T" and "H"?
 
-
-
-
+Because it allows for a number to be returned for the the outcome as opposed to leters. You can still sum with letters, but that output is much more compkicated to analyze as opposed to numbers,
   
   e) Run the code chunk again to simulate another set of 5 coin tosses. Is it reasonable to expect that the results might differ from the first set of tosses? Explain your answer.
 
-
-
-
+Yes because my first outcome showed 2 heads for the oucome and this second run showed 4.
 
 2. The following code uses a \texttt{for} loop to repeat (i.e., replicate) the experiment and record the results of each replicate. The term \texttt{k} is an index, used to keep track of each iteration of the loop; think of it as similar to the index of summation $k$ (or $i$) in sigma notation ($\sum_{k = 1}^n$). The value \texttt{num.replicates} is set to 50, specifying that the experiment is to be repeated 50 times.
 
@@ -122,48 +115,66 @@ table(heads.3)
 
   b) How many heads were observed in the fourth replicate of the experiment? Hint: look at \texttt{outcomes}.
 
-
-
-
+```{r}
+outcomes[4]
+```
+There were 2 heads.
 
   c) Out of the 50 replicates, how often were exactly 3 heads observed in a single experiment?
 
-
-
+20 replicates
 
 
   d) From the tabled results of the simulation, calculate an estimate of the probability of observing exactly 3 heads when the biased coin is tossed 5 times.
 
 
-
+The estimate of the probability is 20/50 = 0.40.
 
 
   e) Re-run the simulation with 10,000 replicates of the experiment; calculate a new estimate of the probability of observing exactly 3 heads when the biased coin is tossed 5 times.
 
+Probability ---> 3521/10000 = 0.352
 
+```{r, echo = FALSE}
+#define parameters
+prob.heads = 0.6
+number.tosses = 5
+number.replicates = 10000
 
+#create empty vector to store outcomes
+outcomes = vector("numeric", number.replicates)
 
+#set the seed for a pseudo-random sample
+set.seed(2018)
+
+#simulate the coin tosses
+for(k in 1:number.replicates){
   
+  outcomes.replicate = sample(c(0, 1), size = number.tosses,
+                      prob = c(1 - prob.heads, prob.heads), replace = TRUE)
+  
+  outcomes[k] = sum(outcomes.replicate)
+}
+
+#view the results
+heads.3 = (outcomes == 3)
+table(heads.3)
+```  
+
   f) Using the laws of probability, calculate the exact probability of observing exactly 3 heads when the biased coin is tossed 5 times.
 
 <!---
 Remember that R can be used as a calculator.
 --->
-
-
 ```{r}
-
+prob.heads = 0.6
+10*prob.heads^3*(1-prob.heads)^2
 ```
+0.3456
 
-
-
-  
   g) How do the values calculated in parts d) and e) compare to the value calculated in part f)? Of the two values derived from simulation, why can the one calculated from 1,000 replicates be considered more reliable?
 
-
-
-
-
+The value obtained from 50 replicates in part d) is 0.40, while the value obtained from 10,000 replicates in part f) is smaller at 0.352 and part e)'s answer is extremely close to part f)'s answer at 0.3456. The one calculated from 1000 is more reliable because I increased the number of replicates.  
 
 \newpage
 
@@ -180,9 +191,11 @@ Remember that R can be used as a calculator.
 --->
 
 ```{r}
-
+prob.false.positive = 0.012
+prob.true.negative = 1 - prob.false.positive
+1 - prob.true.negative^150
 ```
-
+ 0.836491
 
 4. Calculate an estimate of the probability via simulation.
 
@@ -191,21 +204,17 @@ a) Before writing the code to run repeated simulations, it is helpful to first t
 
   i. What are the two possible outcomes when a person is tested? 
       
-      
-      
-      
+      Positive or negative
       
   ii. What are the associated probabilites of the possible outcomes?
       
-      
-      
-      
-      
+      Postive = 0.012
+      Negative = 0.988 (1-0.012)
+
+
   iii. Describe a reasonable way to represent the two possible outcomes with values \texttt{0} and \texttt{1}.
       
-      
-      
-      
+      Positive results can be represented with \texttt{1} and negative results with \texttt{0}.
       
 b) Simulate the results for one set of 150 tests. Use \texttt{set.seed()} so that the results are reproducible. Was there at least one employee who tested positive?
 
@@ -213,23 +222,24 @@ b) Simulate the results for one set of 150 tests. Use \texttt{set.seed()} so tha
 Fill in the missing code, then change FALSE to TRUE for the output to display in the knitted PDF.
 --->
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 #define parameters
-prob.false.positive = 
-number.employees = 
+prob.false.positive = 0.012
+number.employees = 150
 
 #set the seed for a pseudo-random sample
 set.seed(2018)
   
 #simulate the tests
-results = 
+results = sample(c(0,1), size = number.employees, 
+                 prob = c(1 - prob.false.positive, prob.false.positive),
+                 replace = TRUE)
   
 #view the results
 table(results)
 sum(results)
 ```
-
-
+Two employees tested positive, so yes.
 
 c) Based on 100,000 replicates, estimate the probability that at least one employee tests positive out of 150 drug-free employees.
 
@@ -237,11 +247,11 @@ c) Based on 100,000 replicates, estimate the probability that at least one emplo
 Fill in the missing code, then change FALSE to TRUE for the output to display in the knitted PDF.
 --->
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 #define parameters
-prob.false.positive = 
-number.employees = 
-number.replicates =
+prob.false.positive = 0.012
+number.employees = 150
+number.replicates = 100000
   
 #create empty vector to store results
 results = vector("numeric", number.replicates)
@@ -252,7 +262,9 @@ set.seed(2018)
 #simulate the tests
 for(k in 1:number.replicates){
   
-  results.replicate = 
+  results.replicate = sample(c(0,1), size = number.employees, 
+                 prob = c(1 - prob.false.positive, prob.false.positive),
+                 replace = TRUE)
     
   results[k] = sum(results.replicate)
   
@@ -261,11 +273,11 @@ for(k in 1:number.replicates){
 #view the results
 table(results)
 
-at.least.1.pos = 
+at.least.1.pos = (results >= 1)
 table(at.least.1.pos)
 ```
 
-
+The probability is 0.837 (83718/100000).
     
 \newpage
 
@@ -275,47 +287,15 @@ table(at.least.1.pos)
 
     a) Define the relationship between the specificity of a test and the probability of a false positive. 
 
+	The specificity of a test is the probability of a true negative which is the complement of a false positive. 
+
     b) Suppose a clinic conducts approximately 50 mammograms in a week. Use simulation to calculate the probability that no more than 1 woman will test positive if none of the women have breast cancer.
-    
-    c) Re-calculate the probability described in a) if the probability of a false positive result is 0.01.
 
+	The probability is 0.28.
 
-
-
-```{r}
+	 ```{r}
 #define parameters
-prob.false.positive = 0.012
-number.employees = 150
-number.replicates = 100000
-
-#create empty vector to store results
-results = vector("numeric", number.replicates)
-
-#set the seed for a pseudo-random sample
-set.seed(2018)
-
-#simulate the tests
-for(k in 1:number.replicates){
-  
-  results.replicate = sample(c(0,1), size = number.employees,
-                             prob = c(1 - prob.false.positive, prob.false.positive),
-                                      replace = TRUE)
-  
-  results[k] = sum(results.replicate)
-  
-}
-
-#view the results
-table(results)
-
-at.least.1.pos = (results >= 1)
-table(at.least.1.pos)
-```
-
-
-```{r}
-#define parameters
-prob.false.positive = 0.05
+specificity = 0.95
 number.women = 50
 number.replicates = 100000
 
@@ -329,8 +309,8 @@ set.seed(2018)
 for(k in 1:number.replicates){
   
   results.replicate = sample(c(0,1), size = number.women,
-                             prob = c(1 - prob.false.positive, prob.false.positive),
-                                      replace = TRUE)
+                             prob = c(specificity, 1 - specificity),
+                             replace = TRUE)
   
   results[k] = sum(results.replicate)
   
@@ -342,34 +322,37 @@ table(results)
 at.most.1.pos = (results <= 1)
 table(at.most.1.pos)
 ```
-
-### Mammograms
-
-5. The specificity of a diagnostic test refers to the probability that a test is negative in the absence of disease. Mammograms have a specificity of 95\% for detecting breast cancer.
-
-  a) Define the relationship between the specificity of a test and the probability of a false positive.
     
-    
+    c) Re-calculate the probability described in a) if the probability of a false positive result is 0.01.
 
+	The probability is 0.91
 
-  b) Suppose a clinic conducts approximately 50 mammograms in a week. Use simulation to calculate the probability that no more than 1 woman will test positive if none of the women have breast cancer.
-
-  
 ```{r}
 #define parameters
+specificity = 0.99
+number.women = 50
+number.replicates = 100000
 
 #create empty vector to store results
+results = vector("numeric", number.replicates)
 
 #set the seed for a pseudo-random sample
+set.seed(2018)
 
 #simulate the tests
+for(k in 1:number.replicates){
+  
+  results.replicate = sample(c(0,1), size = number.women,
+                             prob = c(specificity, 1 - specificity),
+                             replace = TRUE)
+  
+  results[k] = sum(results.replicate)
+  
+}
 
 #view the results
+table(results)
+
+at.most.1.pos = (results <= 1)
+table(at.most.1.pos)
 ```
-  
-  
-  c) Re-calculate the probability described in a) if the probability of a false positive result is 0.01.
-  
-
-
-  
